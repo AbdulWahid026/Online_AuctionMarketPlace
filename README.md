@@ -43,7 +43,7 @@ The Online Auction System is a web-based platform that allows users to create au
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/nchimunya-joseph/auction-marketplace
+         https://github.com/AbdulWahid026/Online_AuctionMarketPlace.git
    ```
 
 2. Install the required dependencies:
@@ -54,7 +54,6 @@ The Online Auction System is a web-based platform that allows users to create au
 
 3. Set up the database:
    - If using SQLite: No additional setup is required as SQLite creates a database file automatically.
-   - If using MySQL: Set up a MySQL database and update the database configuration in `config.py`.
 
 4. Configure the environment variables:
    - Rename the `.env` file to `.env`.
@@ -62,10 +61,7 @@ The Online Auction System is a web-based platform that allows users to create au
 
 ## Usage
 
-1. Start the application:
-
-   ```bash
-   python app.py
+1. Start the application:  python app.py
    
 
 ## License
