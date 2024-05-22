@@ -1,0 +1,164 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title  -->
+  <title>Auction MarketPlace</title>
+  <link rel="icon" href="{{url_for('static',filename="img/core-img/favicon.ico")}}" rel="stylesheet" media="all">
+
+  <!-- Style CSS -->
+  <link rel="stylesheet" href="{{url_for('static',filename="style.css")}}" >
+  <link rel="stylesheet" href="{{url_for('static',filename="css/styles.css")}}" >
+
+
+</head>
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area">
+      <!-- Top Header Area -->
+      <div class="top-header-area">
+          <div class="container h-100">
+              <div class="row h-100">
+                  <div class="col-12 h-100">
+                      <div class="h-100 d-md-flex justify-content-between align-items-center">
+                          <p>Welcome to <span>Auction Market Place</span></p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Main Header Area -->
+      <div class="main-header-area" id="stickyHeader">
+          <div class="container h-100">
+              <div class="row h-100 align-items-center">
+                  <div class="col-12 h-100">
+                      <div class="main-menu h-100">
+                          <nav class="navbar h-100 navbar-expand-lg">
+                              <!-- Logo Area  -->
+                              <div class="logo">
+                                <img src="static\img\bg-img\logo.jpg" alt="Company Logo">
+                            </div>
+                              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#medilifeMenu" aria-controls="medilifeMenu" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+
+                              <div class="collapse navbar-collapse" id="medilifeMenu">
+                                  <!-- Menu Area -->
+                                  <ul class="navbar-nav ml-auto">
+
+                                    <li class="nav-item active">
+                                          
+                                      <a class="nav-link" href="http://127.0.0.1:5000/profile">Home <span class="sr-only">(current)</span></a>
+                                  </li>
+
+                                      <li class="nav-item active">
+                                          
+                                        <a class="nav-link" href="http://127.0.0.1:5000/auction">Auctions <span class="sr-only">(current)</span></a>
+                                    </li>
+
+                                    <li class="nav-item active">
+                                          
+                                      <a class="nav-link" href="http://127.0.0.1:5000/auctions">Create Auction <span class="sr-only">(current)</span></a>
+                                    </li>
+
+                                    <li class="nav-item active">
+                                          
+                                      <a class="nav-link" href="http://127.0.0.1:5000/contact">Contact Us <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    <li class="nav-item active">
+                                          
+                                      <a class="nav-link" href="http://127.0.0.1:5000/">Log Out <span class="sr-only">(current)</span></a>
+                                  </li>                            
+                                  </ul>
+                                  
+                              </div>
+                          </nav>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </header>
+  <br><br><br><br><br><br><br>
+<!-- Filter dropdown menu -->
+<div class="mb-3" id="categoryDropdown">
+    <label for="categoryFilter" class="form-label red-label">Filter by Animal Category:</label>
+    
+    <select id="categoryFilter" class="form-select">
+        <option value="all">All</option>
+        <option value="cat">Cat</option>
+        <option value="dog">Dog</option>
+        <option value="bird">Pigeon</option>
+        <option value="bird">Hawk</option>
+        <option value="bird">Parrot</option>
+
+    </select>
+</div>
+
+<!-- Auction cards (initially hidden) -->
+<div class="list-group container" id="auctionCards" style="display: none;">
+    <h3 style="margin-left: 10px;">Animal Auctions</h3>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for auction in auctions %}
+            <div class="col" data-category="{{ auction.category }}">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='img/bg-img/' + auction.title + '.jpg') }}" class="card-img-top" alt="{{ auction.title }} Image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ auction.title }}</h5>
+                        <p class="card-text text-truncate">{{ auction.description }}</p>
+                        <p class="card-text">
+                            <small class="text-body-secondary">
+                                {% if current_user and auction.user_id == current_user.id %}
+                                    <form action="{{ url_for('delete_auction', auction_id=auction.id) }}" style="display: flex; justify-content: flex-start; align-items: center;" method="post">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <a href="{{ url_for('update_auction', auction_id=auction.id) }}" class="btn btn-warning red-button">Update</a>
+                                        <button type="submit" class="btn btn-danger">Delete Auction</button>
+                                    </form>
+                                {% else %}
+                                    <a href="{{ url_for('place_bid', auction_id=auction.id) }}" class="btn btn-primary">Place Bid</a>
+                                {% endif %}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    // Function to show all auction categories
+    function showAllCategories() {
+        let auctionCards = document.querySelectorAll('#auctionCards .col');
+        auctionCards.forEach(function(card) {
+            card.style.display = 'block';
+        });
+        // Show the auction cards container
+        document.getElementById('auctionCards').style.display = 'block';
+    }
+
+    // Show all categories when the page loads
+    window.addEventListener('load', showAllCategories);
+
+    // Event listener for category filter change
+    document.getElementById('categoryFilter').addEventListener('change', function() {
+        let selectedTitle = this.value.toLowerCase().trim(); // Convert the selected title to lowercase and trim any whitespace
+        let auctionCards = document.querySelectorAll('#auctionCards .col');
+
+        // Show or hide auction cards based on selected title
+        auctionCards.forEach(function(card) {
+            let auctionTitle = card.querySelector('.card-title').textContent.toLowerCase().trim(); // Get the auction title from the card
+            if (selectedTitle === 'all' || auctionTitle === selectedTitle) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show the auction cards container if any card is displayed
+        let anyCardDisplayed = Array.from(auctionCards).some(card => card.style.display === 'block');
+        document.getElementById('auctionCards').style.display = anyCardDisplayed ? 'block' : 'none';
+    });
+</script>
+
+
+  
